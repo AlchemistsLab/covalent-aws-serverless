@@ -10,7 +10,7 @@ const Chains = props => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await covalentRequest('/chains/status/');
+        const response = await covalentRequest('/chains/status/', {});
         if (response) {
           setChainsData(response.data ? response.data.items : []);
         }
