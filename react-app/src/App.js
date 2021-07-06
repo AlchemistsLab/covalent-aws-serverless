@@ -1,27 +1,39 @@
+import React, { useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import Chains from './components/chains';
+import { withRouter } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { CHAINS_DATA } from './redux/types';
+import { request as covalentRequest } from './api/covalent';
+import Header from './layouts/header';
 
-function App() {
+const App = ({ children, location, match }) => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const response = await covalentRequest('/chains/', {});
+        if (response) {
+          dispatch({ type: CHAINS_DATA, payload: response.data ? response.data.items : [] });
+        }
+      } catch (error) {}
+    };
+    getData();
+    const interval = setInterval(() => getData(), 30 * 1000);
+    return () => clearInterval(interval);
+  }, [dispatch]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" style={{ maxWidth: '10rem', maxHeight: '10rem' }} />
-        {/*<p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>*/}
-        <Chains />
-      </header>
+      {!location.pathname || location.pathname === '/' ?
+        <img src={logo} alt="logo" className="App-logo" style={{ maxWidth: '10rem', maxHeight: '10rem' }} />
+        :
+        <Header logo={<img src={logo} alt="logo" className="App-logo" style={{ maxWidth: '4rem', maxHeight: '4rem' }} />} />
+      }
+      {children}
     </div>
   );
 }
 
-export default App;
+export default withRouter(App);
