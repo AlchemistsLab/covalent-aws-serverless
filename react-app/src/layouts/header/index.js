@@ -39,32 +39,12 @@ const Header = props => {
   return (
     <div className="d-flex align-items-center mx-4" style={{ maxHeight: '5rem' }}>
       <Link to="/">{props.logo}</Link>
-      <ButtonDropdown isOpen={dropdownOpen} toggle={toggle} style={{ marginLeft: 'auto' }}>
-        <DropdownToggle caret outline color="primary" className="d-flex align-items-center">
-          {chainSelected && chainsData && chainsData.findIndex(chainData => chainData.name === chainSelected) > -1 ?
-            chainsData.filter(chainData => chainData.name === chainSelected).map((chainData, key) => (
-              <Media key={key} className="d-inline-flex align-items-center">
-                <Media left style={{ marginRight: '.25rem' }}>
-                  <Media object src={chainData.logo_url} alt={chainData.name} style={{ maxWidth: '1.5rem' }} />
-                </Media>
-                <Media body style={{ fontSize: '.75rem' }}>
-                  {chainData.label}
-                </Media>
-              </Media>
-            ))
-            :
-            'Select Chain'
-          }
-        </DropdownToggle>
-        <DropdownMenu style={{ left: 'unset', right: 0, minWidth: 'max-content' }}>
-          {chainsData ?
-            chainsData.map((chainData, key) => (
-              <DropdownItem
-                key={key}
-                disabled={chainSelected === chainData.name}
-                onClick={() => selectChain(chainData.name)}
-              >
-                <Media className="d-flex align-items-center">
+      {chainsData && (
+        <ButtonDropdown isOpen={dropdownOpen} toggle={toggle} style={{ marginLeft: 'auto' }}>
+          <DropdownToggle caret outline color="primary" className="d-flex align-items-center">
+            {chainSelected && chainsData.findIndex(chainData => chainData.name === chainSelected) > -1 ?
+              chainsData.filter(chainData => chainData.name === chainSelected).map((chainData, key) => (
+                <Media key={key} className="d-inline-flex align-items-center">
                   <Media left style={{ marginRight: '.25rem' }}>
                     <Media object src={chainData.logo_url} alt={chainData.name} style={{ maxWidth: '1.5rem' }} />
                   </Media>
@@ -72,13 +52,35 @@ const Header = props => {
                     {chainData.label}
                   </Media>
                 </Media>
-              </DropdownItem>
-            ))
-            :
-            []
-          }
-        </DropdownMenu>
-      </ButtonDropdown>
+              ))
+              :
+              'Select Chain'
+            }
+          </DropdownToggle>
+          <DropdownMenu style={{ left: 'unset', right: 0, minWidth: 'max-content' }}>
+            {chainsData ?
+              chainsData.map((chainData, key) => (
+                <DropdownItem
+                  key={key}
+                  disabled={chainSelected === chainData.name}
+                  onClick={() => selectChain(chainData.name)}
+                >
+                  <Media className="d-flex align-items-center">
+                    <Media left style={{ marginRight: '.25rem' }}>
+                      <Media object src={chainData.logo_url} alt={chainData.name} style={{ maxWidth: '1.5rem' }} />
+                    </Media>
+                    <Media body style={{ fontSize: '.75rem' }}>
+                      {chainData.label}
+                    </Media>
+                  </Media>
+                </DropdownItem>
+              ))
+              :
+              []
+            }
+          </DropdownMenu>
+        </ButtonDropdown>
+      )}
     </div>
   );
 }
