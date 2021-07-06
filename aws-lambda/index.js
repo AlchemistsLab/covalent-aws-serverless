@@ -33,7 +33,7 @@ exports.handler = async (event, context, callback) => {
     // send request to Covalent API
     const res = await requester.get(path, { params })
       // set response data from error handled by exception
-      .catch(error => { return { data: null, error: true, error_message: error.message, error_code: error.code }; });
+      .catch(error => { return { data: { data: null, error: true, error_message: error.message, error_code: error.code } }; });
 
     // set response data
     if (res && res.data) {

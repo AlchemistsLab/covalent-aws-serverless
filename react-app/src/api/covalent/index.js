@@ -12,7 +12,7 @@ export const request = async (path, params) => {
     // send request to your API
     const res = await requester.get('', { params: { path, ...(params || {}) } })
       // set response data from error handled by exception
-      .catch(error => { return { data: null, error: true, error_message: error.message, error_code: error.code }; });
+      .catch(error => { return { data: { data: null, error: true, error_message: error.message, error_code: error.code } }; });
 
     // set response data
     if (res && res.data) {
