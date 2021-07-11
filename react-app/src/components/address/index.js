@@ -410,7 +410,7 @@ const Address = props => {
       {!balancesLoaded ?
         // spinner
         <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '40vh' }}>
-          <Loader type="Grid" color="#0b5ed7" />
+          <Loader type="Grid" color="#0b5ed7" width="2rem" height="2rem" />
         </div>
         :
         !balances ?
@@ -580,7 +580,7 @@ const Address = props => {
             <h3 className="d-flex align-items-center mb-0" style={{ fontWeight: 600 }}>
               {"Transactions"}
               {!transactionsFullLoaded && transactionsLoading && (
-                <Loader type="Oval" color="#0b5ed7" width="1.25rem" height="1.25rem" style={{ marginTop: '-.125rem', marginLeft: '.5rem' }} />
+                <Loader type="Oval" color="#0b5ed7" width="2rem" height="2rem" style={{ marginTop: '-.125rem', marginLeft: '.5rem' }} />
               )}
             </h3>
           </Col>

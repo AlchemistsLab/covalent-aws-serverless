@@ -72,6 +72,16 @@ a {
   overflow-x: scroll;
 }
 
+@media (max-width: 575px) {
+  .react-bs-table-no-data {
+    text-align: left !important;
+  }
+
+  .react-bs-table-no-data .justify-content-center {
+    justify-content: start !important;
+  }
+}
+
 .react-bs-table-no-data {
   text-align: center;
   padding: 2rem 1rem !important;

@@ -100,7 +100,7 @@ const Transaction = props => {
       {!loaded ?
         // spinner
         <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '40vh' }}>
-          <Loader type="ThreeDots" color="#0b5ed7" />
+          <Loader type="ThreeDots" color="#0b5ed7" width="2rem" height="2rem" />
         </div>
         :
         !data ?
