@@ -4,6 +4,7 @@ const initial_state = {
   chain_selected: null,
 };
 
+// preferences reducer
 const reducer = (state = initial_state, action) => {
   switch (action.type) {
     case CHAIN_SELECTED:

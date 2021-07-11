@@ -4,6 +4,7 @@ const initial_state = {
   chains_data: null,
 };
 
+// data reducer
 const reducer = (state = initial_state, action) => {
   switch (action.type) {
     case CHAINS_DATA:

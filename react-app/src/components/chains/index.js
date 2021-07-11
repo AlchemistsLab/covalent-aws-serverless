@@ -3,11 +3,16 @@ import { Link } from 'react-router-dom';
 import { request as covalentRequest } from '../../api/covalent';
 import { Row, Col, Card, CardImg, CardBody, CardTitle, CardText } from 'reactstrap';
 import Moment from 'react-moment';
+import Loader from 'react-loader-spinner';
 
+// chains component
 const Chains = props => {
+  // chains data
   const [chainsData, setChainsData] = useState([]);
+  // chains loaded parameter
   const [loaded, setLoaded] = useState(false);
 
+  // request chains' status: '/chains/status/'
   useEffect(() => {
     const getData = async () => {
       try {
@@ -19,26 +24,28 @@ const Chains = props => {
       } catch (error) {}
     };
     getData();
+    // interval request (10 sec)
     const interval = setInterval(() => getData(), 10 * 1000);
     return () => clearInterval(interval);
   }, []);
 
   return (
     <div className="mx-4">
-      <h2>{"Example React App"}</h2>
+      {/* title */}
+      <h2>{process.env.REACT_APP_APP_NAME || 'Example React App'}</h2>
       {!loaded ?
+        // spinner
         <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '40vh' }}>
-          <div className="spinner-border text-primary">
-            <span className="sr-only" />
-          </div>
+          <Loader type="Oval" color="#0b5ed7" />
         </div>
         :
         <Row className="mt-4">
           {chainsData && chainsData.map((chainData, key) => (
             <Col key={key} xl="3" lg="4" md="6" xs="12" className="mb-4">
+              {/* chain infomation */}
               <Card className="p-3">
                 <Link to={`/${chainData.name}`} style={{ textAlign: 'left' }}>
-                  <CardImg top src={chainData.logo_url} alt={chainData.name} style={{ maxWidth: '4rem' }} />
+                  <CardImg top src={chainData.logo_url} alt="" className="avatar-lg" />
                 </Link>
                 <CardBody className="p-0 pt-3">
                   <CardTitle tag="h5" className="mb-0" style={{ fontWeight: 600, textAlign: 'left' }}>

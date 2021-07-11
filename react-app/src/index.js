@@ -5,10 +5,12 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { routes } from './routes';
 import store from './store';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import 'video-react/dist/video-react.css';
 
 ReactDOM.render(
   <Fragment>
@@ -16,50 +18,43 @@ ReactDOM.render(
       <BrowserRouter>
         <Switch>
           <App>
-            <TransitionGroup>
-              {routes.map(({ path, Component, exact }) => (
-                <Route key={path ? path : ''} path={path} exact={exact}>
-                  {({ location, match }) => {
-                    if (location.pathname.length > 1 && location.pathname.endsWith('/')) {
-                      let redirectPath = location.pathname;
-                      while (redirectPath.endsWith('/')) {
-                        redirectPath = redirectPath.substring(0, redirectPath.length - 1);
-                      }
-                      return (<Redirect to={redirectPath} />);
+            {/* iterate all routes */}
+            {routes.map(({ path, Component, exact }) => (
+              <Route key={path ? path : ''} path={path} exact={exact}>
+                {({ location, match }) => {
+                  // redirect path end with multiple '/'
+                  if (location.pathname.length > 1 && location.pathname.endsWith('/')) {
+                    let redirectPath = location.pathname;
+                    while (redirectPath.endsWith('/')) {
+                      redirectPath = redirectPath.substring(0, redirectPath.length - 1);
                     }
-                    if (!path && match) {
-                      if (match.isExact || location.key) {
-                        match = null;
-                      }
-                      else {
-                        if (routes.filter(route => route.path).findIndex(route => {
-                          const routeSplited = route.path.split('/');
-                          const pathSplited = location.pathname.split('/');
-                          if (routeSplited.length !== pathSplited.length)
-                            return false;
-                          return routeSplited.findIndex((x, i) => !(x === pathSplited[i] || x.startsWith(':'))) > -1 ? false : true;
-                        }) > -1) {
-                          match = null;
-                        }
-                      }
-                    }
-                    if (match && match.url !== match.path && routes.findIndex(route => route.path === match.url) > -1) {
+                    return (<Redirect to={redirectPath} />);
+                  }
+                  // start filter route
+                  if (!path && match) {
+                    if (match.isExact || location.key) {
                       match = null;
                     }
-                    return (
-                      <CSSTransition
-                        in={match !== null}
-                        timeout={100}
-                        classNames="fade"
-                        unmountOnExit
-                      >
-                        <Component match={match} />
-                      </CSSTransition>
-                    );
-                  }}
-                </Route>
-              ))}
-            </TransitionGroup>
+                    else {
+                      if (routes.filter(route => route.path).findIndex(route => {
+                        const routeSplit = route.path.split('/');
+                        const pathSplit = location.pathname.split('/');
+                        if (routeSplit.length !== pathSplit.length)
+                          return false;
+                        return routeSplit.findIndex((x, i) => !(x === pathSplit[i] || x.startsWith(':'))) > -1 ? false : true;
+                      }) > -1) {
+                        match = null;
+                      }
+                    }
+                  }
+                  if (match && match.url !== match.path && routes.findIndex(route => route.path === match.url) > -1) {
+                    match = null;
+                  }
+                  // end filter route
+                  return match && (<Component match={match} />); // return component for each route
+                }}
+              </Route>
+            ))}
           </App>
         </Switch>
       </BrowserRouter>

@@ -7,6 +7,7 @@ export const routes = [
   { path: '/', Component: Chains, exact: true },
   { path: '/:chain_name', Component: Chain, exact: true },
   { path: '/:chain_name/address/:address', Component: Address, exact: true },
+  { path: '/:chain_name/address/:address/:type', Component: Address, exact: true },
   { path: '/:chain_name/tx/:txn_hash', Component: Transaction, exact: true },
   { Component: Chains }
 ];

@@ -1,3 +1,5 @@
+// key field reducer constants
+
 // data
 export const CHAINS_DATA = 'chains_data';
 
