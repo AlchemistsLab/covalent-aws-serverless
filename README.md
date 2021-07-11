@@ -75,7 +75,7 @@ An example of React app using [create-react-app](https://reactjs.org/docs/create
 
 - Install dependencies
 	```
-	npm install
+	npm install --force
 	```
 
 - Run on localhost
