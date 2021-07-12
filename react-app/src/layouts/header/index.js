@@ -38,7 +38,7 @@ const Header = props => {
   // handle search
   const search = e => {
     e.preventDefault();
-    const id = e.target && e.target[0] && e.target[0].value;
+    const id = e.target && e.target[0] && _.last(e.target[0].value.split('/').filter(x => x));
     if (id) {
       setRedirectPath(`/${chainSelected}${id.length > 40 && id.length < 45 ? '/address' : '/tx'}/${id}${_.slice(paths, 3).map(path => `/${path}`).join('')}`);
     }
@@ -48,7 +48,7 @@ const Header = props => {
   const selectChain = (chainName, isNotRedirect) => {
     dispatch({ type: CHAIN_SELECTED, payload: chainName });
     if (!isNotRedirect) {
-      setRedirectPath(`/${chainName}${_.slice(paths, 1).map(path => `/${path}`).join('')}`);
+      setRedirectPath(`/${chainName}${_.slice(paths, 1, paths[1] === 'address' ? 4 : 3).map(path => `/${path}`).join('')}`);
     }
   };
 
