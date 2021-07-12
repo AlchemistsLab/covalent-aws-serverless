@@ -108,8 +108,15 @@ export const fixNFTImageData = async nftData => {
 				nftData.external_data.animation_url = nftData.external_data.animation_url.replace(sitePattern, siteUrl);
 			}
 		});
-		if (nftData.external_data.image.endsWith('.mp4') && !nftData.external_data.animation_url) {
-			nftData.external_data.animation_url = nftData.external_data.image;
+		(Array.isArray(nftData.external_data.image) ? (nftData.external_data.image) : [nftData.external_data.image]).forEach(image => {
+			if (image.endsWith('.mp4') && !nftData.external_data.animation_url) {
+				nftData.external_data.animation_url = image;
+			}
+		});
+		nftData.external_data.animation_url = nftData.external_data.animation_url ? nftData.external_data.animation_url.startsWith(siteUrl) && !nftData.external_data.animation_url.startsWith(`${siteUrl}ipfs/`) ? nftData.external_data.animation_url.replace(siteUrl, `${siteUrl}ipfs/`) : nftData.external_data.animation_url : undefined;
+		nftData.external_data.image = (Array.isArray(nftData.external_data.image) ? (nftData.external_data.image) : [nftData.external_data.image]).map(image => image.startsWith(siteUrl) && !image.startsWith(`${siteUrl}ipfs/`) ? image.replace(siteUrl, `${siteUrl}ipfs/`) : image);
+		if (nftData.external_data.animation_url && Array.isArray(nftData.external_data.image)) {
+			nftData.external_data.image = nftData.external_data.image[0];
 		}
 	}
 	return nftData;
