@@ -2,7 +2,7 @@ import React, { useState, useEffect, useLayoutEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { request as covalentRequest } from '../../api/covalent';
-import { Row, Col, Jumbotron, UncontrolledTooltip, Button, Nav, NavItem, Card, CardImg, CardBody, CardTitle, CardText } from 'reactstrap';
+import { Row, Col, Jumbotron, UncontrolledTooltip, Button, Nav, NavItem, Card, CardBody, CardTitle, CardText } from 'reactstrap';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Clipboard, ClipboardCheck, EmojiDizzy, CheckCircle, XCircle, ChevronUp, ChevronDown } from 'react-bootstrap-icons';
 import _ from 'lodash';
@@ -393,7 +393,12 @@ const Address = props => {
         </CopyToClipboard>
         {contract && (
           <div className="d-flex align-items-center mt-3 mt-sm-0" style={{ marginLeft: width <= 575 ? 0 : 'auto' }}>
-            <img className="avatar avatar-no-min-width" src={contract.logo_url} alt="" />
+            <Img
+              src={contract.logo_url}
+              unloader={<div className="avatar avatar-no-min-width" />}
+              alt=""
+              className="avatar avatar-no-min-width"
+            />
             <div style={{ textAlign: 'left', marginLeft: '.5rem' }}>
               <div className="d-flex align-items-center" style={{ fontSize: '1rem', fontWeight: 700 }}>
                 {contract.contract_name}&nbsp;
@@ -482,7 +487,13 @@ const Address = props => {
                         <Card className={`${balance.nft_data && balance.nft_data.length > 0 ? 'h-100' : ''}`}>
                           <CardTitle tag="h5" className="mb-0 py-1 px-3" style={{ fontWeight: 600, textAlign: 'left' }}>
                             <Link to={`/${chainSelected}/address/${balance.contract_address}${assetTypeSelected === 'nft' ? `/${assetTypeSelected}` : ''}`} className="d-flex align-items-center" style={{ wordBreak: 'break-word' }}>
-                              <CardImg top src={balance.logo_url} alt="" className="avatar avatar-no-min-width" style={{ marginRight: balance.logo_url ? '.125rem' : null }} />
+                              <Img
+                                src={balance.logo_url}
+                                unloader={<div className="avatar avatar-no-min-width" />}
+                                alt=""
+                                className="avatar avatar-no-min-width"
+                                style={{ marginRight: balance.logo_url ? '.125rem' : null }}
+                              />
                               <span style={{ fontSize: '1rem', marginRight: '.5rem' }}>{balance.contract_name || balance.contract_address}</span>
                               <span className="text-muted ml-auto" style={{ minWidth: '2rem', textAlign: 'right', fontSize: '.65rem', fontWeight: 500, marginLeft: 'auto' }}>
                                 {balance.contract_ticker_symbol}
@@ -555,7 +566,13 @@ const Address = props => {
                         <Card className="p-3">
                           <CardTitle tag="h5" className="mb-0" style={{ fontWeight: 600, textAlign: 'left' }}>
                             <Link to={`/${chainSelected}/address/${balance.contract_address}${assetTypeSelected === 'nft' ? `/${assetTypeSelected}` : ''}`} className="d-flex align-items-center" style={{ wordBreak: 'break-word' }}>
-                              <CardImg top src={balance.logo_url} alt="" className="avatar avatar-no-min-width" style={{ marginRight: balance.logo_url ? '.5rem' : null }} />
+                              <Img
+                                src={balance.logo_url}
+                                unloader={<div className="avatar avatar-no-min-width" />}
+                                alt=""
+                                className="avatar avatar-no-min-width"
+                                style={{ marginRight: balance.logo_url ? '.5rem' : null }}
+                              />
                               <span style={{ fontSize: '1rem', marginRight: '.5rem' }}>{balance.contract_name}</span>
                               <span className="text-muted ml-auto" style={{ minWidth: '2rem', textAlign: 'right', fontSize: '.65rem', fontWeight: 500, marginLeft: 'auto' }}>
                                 {balance.contract_ticker_symbol}
