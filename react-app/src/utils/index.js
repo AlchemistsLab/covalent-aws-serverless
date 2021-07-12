@@ -108,6 +108,9 @@ export const fixNFTImageData = async nftData => {
 				nftData.external_data.animation_url = nftData.external_data.animation_url.replace(sitePattern, siteUrl);
 			}
 		});
+		if (nftData.external_data.image.endsWith('.mp4') && !nftData.external_data.animation_url) {
+			nftData.external_data.animation_url = nftData.external_data.image;
+		}
 	}
 	return nftData;
 };
