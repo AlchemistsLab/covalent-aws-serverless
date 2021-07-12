@@ -470,16 +470,16 @@ const Address = props => {
               <Row>
                 {filteredBalances.map((balance, key) => (
                   <>
-                    {filteredBalances[key - 1] && filteredBalances[key - 1].nft_data && !filteredBalances[key].nft_data && (
+                    {/*filteredBalances[key - 1] && filteredBalances[key - 1].nft_data && !filteredBalances[key].nft_data && (
                       [...Array(width <= 575 ? 0 : (width <= 991 ? 2 : width <= 1200 ? 3 : 4) - (key % (width <= 991 ? 2 : width <= 1200 ? 3 : 4))).keys()].map(i => (
                         <Col key={key} xl="3" lg="4" sm="6" xs="12">
                         </Col>
                       ))
-                    )}
+                    )*/}
                     <Col key={key} xl="3" lg="4" sm="6" xs="12" className="mb-3 mb-sm-4">
                       {assetTypeSelected === 'nft' ?
                         // nft information
-                        <Card className="h-100">
+                        <Card className={`${balance.nft_data && balance.nft_data.length > 0 ? 'h-100' : ''}`}>
                           <CardTitle tag="h5" className="mb-0 py-1 px-3" style={{ fontWeight: 600, textAlign: 'left' }}>
                             <Link to={`/${chainSelected}/address/${balance.contract_address}${assetTypeSelected === 'nft' ? `/${assetTypeSelected}` : ''}`} className="d-flex align-items-center" style={{ wordBreak: 'break-word' }}>
                               <CardImg top src={balance.logo_url} alt="" className="avatar avatar-no-min-width" style={{ marginRight: balance.logo_url ? '.125rem' : null }} />
