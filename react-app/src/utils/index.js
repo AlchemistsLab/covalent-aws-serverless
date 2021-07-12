@@ -77,7 +77,11 @@ export const fixNFTImageData = async nftData => {
 		    const res = await axios.get(nftData.external_data.external_url)
 		      .catch(error => { return { data: null }; });
 		    if (res && res.data) {
-		      nftData.external_data = { ...nftData.external_data, ...res.data };
+		      nftData.external_data = {
+		      	...nftData.external_data,
+		      	...res.data,
+		      	image: res.data.image ? typeof res.data.image === 'object' ? res.data.description ? res.data.description : nftData.external_data.image : res.data.image : nftData.external_data.image,
+		      };
 		    }
 		  } catch (error) {}
 		}
@@ -86,7 +90,11 @@ export const fixNFTImageData = async nftData => {
 		    const res = await axios.get(nftData.token_url)
 		      .catch(error => { return { data: null }; });
 		    if (res && res.data) {
-		    	nftData.external_data = { ...nftData.external_data, ...res.data };
+		      nftData.external_data = {
+		      	...nftData.external_data,
+		      	...res.data,
+		      	image: res.data.image ? typeof res.data.image === 'object' ? res.data.description ? res.data.description : nftData.external_data.image : res.data.image : nftData.external_data.image,
+		      };
 		    }
 		  } catch (error) {}
 		}
