@@ -286,11 +286,15 @@ const Address = props => {
     setTransactionsSeeMoreButtonDisabled(false);
   }, [chainSelected, address, assetTypeSelected, balances, transactions]);
 
+  // balances see more size threshold
+  const balancesSeeMoreThreshold = width <= 575 ? 4 : width <= 991 ? 6 : 8;
+
   // normalize and filter balances data
   let filteredBalances = balances && balances.map(balance => {
-    return { ...balance, balance: Number(balance.balance) };
+    return { ...balance, balance: Number(balance.balance), nft_data: balance.nft_data && balance.nft_data.length > 0 ? balance.nft_data : null };
   }).filter(balance => assetTypeSelected === 'nft' ? balance.type === assetTypeSelected : balance.type !== 'nft');
   filteredBalances = filteredBalances && filteredBalances.filter((balance, i) => assetTypeSelected === 'nft' || balance.balance > 0 || (filteredBalances.findIndex(_balance => _balance.balance > 0) < 0 && i < 3));
+  filteredBalances = _.orderBy(filteredBalances, [assetTypeSelected === 'nft' ? 'nft_data' : 'index'], ['asc']).filter((balance, i) => balancesSeeMore || i < balancesSeeMoreThreshold);
 
   // normalize and filter transactions data
   const filteredTransactions = transactions && _.orderBy(transactions.map((transaction, i) => {
@@ -358,9 +362,6 @@ const Address = props => {
       ),
     }
   }), ['block_signed_at'], ['desc']);
-
-  // balances see more size threshold
-  const balancesSeeMoreThreshold = width <= 575 ? 4 : width <= 991 ? 6 : 8;
 
   // nft slick settings
   const nftSlickSettings = {
@@ -467,113 +468,121 @@ const Address = props => {
               </div>
               :
               <Row>
-                {filteredBalances.filter((balance, i) => balancesSeeMore || i < balancesSeeMoreThreshold).map((balance, key) => (
-                  <Col key={key} xl="3" lg="4" sm="6" xs="12" className="mb-3 mb-sm-4">
-                    {assetTypeSelected === 'nft' ?
-                      // nft information
-                      <Card className="h-100">
-                        <CardTitle tag="h5" className="mb-0 p-3" style={{ fontWeight: 600, textAlign: 'left' }}>
-                          <Link to={`/${chainSelected}/address/${balance.contract_address}${assetTypeSelected === 'nft' ? `/${assetTypeSelected}` : ''}`} className="d-flex align-items-center" style={{ wordBreak: 'break-word' }}>
-                            <CardImg top src={balance.logo_url} alt="" className="avatar avatar-no-min-width" style={{ marginRight: balance.logo_url ? '.125rem' : null }} />
-                            <span style={{ fontSize: '1rem', marginRight: '.5rem' }}>{balance.contract_name || balance.contract_address}</span>
-                            <span className="text-muted ml-auto" style={{ minWidth: '2rem', textAlign: 'right', fontSize: '.65rem', fontWeight: 500, marginLeft: 'auto' }}>
-                              {balance.contract_ticker_symbol}
-                            </span>
-                          </Link>
-                        </CardTitle>
-                        <CardBody className="p-0 pb-3">
-                          {balance.nft_data && balance.nft_data.length > 0 ?
-                            <Slider {...nftSlickSettings}>
-                              {balance.nft_data.map((nft, key) => (
-                                <div key={key} className="carousel-item">
-                                  {nft.external_data && nft.external_data.animation_url ?
-                                    <Player
-                                      playsInline
-                                      poster={Array.isArray(nft.external_data.image) ? nft.external_data.image[0] : nft.external_data.image}
-                                      src={nft.external_data.animation_url}
-                                      className="w-100 h-100 mx-auto"
-                                      style={{ minHeight: width > 575 ? '10rem' : '', maxHeight: '30rem' }}
-                                    />
-                                    :
-                                    <a href={nft.external_data ? nft.external_data.image ? Array.isArray(nft.external_data.image) ? nft.external_data.image[0] : nft.external_data.image : nft.external_data.external_url ? nft.external_data.external_url : nft.token_url : nft.token_url} target="_blank" rel="noopener noreferrer" className="d-block" style={{ minHeight: width > 575 ? '10rem' : null }}>
-                                      <Img
-                                        src={nft.external_data ? nft.external_data.image : null}
-                                        loader={<div className="d-flex align-items-center justify-content-center" style={{ minHeight: '15rem', maxHeight: '15rem' }}><Loader type="Oval" color="#0b5ed7" width="1rem" height="1rem" /></div>}
-                                        unloader={nft.external_data && nft.external_data.image ?
-                                          <img src={Array.isArray(nft.external_data.image) ? nft.external_data.image[0] : nft.external_data.image} alt="" className="w-100 h-100 mx-auto" style={{ maxHeight: '30rem' }} />
-                                          :
-                                          <div className="w-100 h-100 text-muted d-flex align-items-center justify-content-center mx-auto" style={{ minHeight: '15rem', maxHeight: '15rem' }}>{"Data not found"}</div>
-                                        }
-                                        alt=""
+                {filteredBalances.map((balance, key) => (
+                  <>
+                    {filteredBalances[key - 1] && filteredBalances[key - 1].nft_data && !filteredBalances[key].nft_data && (
+                      [...Array(width <= 575 ? 0 : (width <= 991 ? 2 : width <= 1200 ? 3 : 4) - (key % (width <= 991 ? 2 : width <= 1200 ? 3 : 4))).keys()].map(i => (
+                        <Col key={key} xl="3" lg="4" sm="6" xs="12">
+                        </Col>
+                      ))
+                    )}
+                    <Col key={key} xl="3" lg="4" sm="6" xs="12" className="mb-3 mb-sm-4">
+                      {assetTypeSelected === 'nft' ?
+                        // nft information
+                        <Card className="h-100">
+                          <CardTitle tag="h5" className="mb-0 py-1 px-3" style={{ fontWeight: 600, textAlign: 'left' }}>
+                            <Link to={`/${chainSelected}/address/${balance.contract_address}${assetTypeSelected === 'nft' ? `/${assetTypeSelected}` : ''}`} className="d-flex align-items-center" style={{ wordBreak: 'break-word' }}>
+                              <CardImg top src={balance.logo_url} alt="" className="avatar avatar-no-min-width" style={{ marginRight: balance.logo_url ? '.125rem' : null }} />
+                              <span style={{ fontSize: '1rem', marginRight: '.5rem' }}>{balance.contract_name || balance.contract_address}</span>
+                              <span className="text-muted ml-auto" style={{ minWidth: '2rem', textAlign: 'right', fontSize: '.65rem', fontWeight: 500, marginLeft: 'auto' }}>
+                                {balance.contract_ticker_symbol}
+                              </span>
+                            </Link>
+                          </CardTitle>
+                          <CardBody className="p-0 pb-3">
+                            {balance.nft_data && balance.nft_data.length > 0 ?
+                              <Slider {...nftSlickSettings}>
+                                {balance.nft_data.map((nft, key) => (
+                                  <div key={key} className="carousel-item">
+                                    {nft.external_data && nft.external_data.animation_url ?
+                                      <Player
+                                        playsInline
+                                        poster={Array.isArray(nft.external_data.image) ? nft.external_data.image[0] : nft.external_data.image}
+                                        src={nft.external_data.animation_url}
                                         className="w-100 h-100 mx-auto"
-                                        style={{ maxHeight: '30rem' }}
+                                        style={{ minHeight: width > 575 ? '10rem' : '', maxHeight: '30rem' }}
                                       />
-                                    </a>
-                                  }
-                                  <div className="pt-3 px-3">
-                                    <CardText className="text-primary mb-2" style={{ fontSize: '.85rem', fontWeight: 500, textAlign: 'left' }}>
-                                      <a href={nft.token_url} target="_blank" rel="noopener noreferrer">
-                                        {nft.external_data && nft.external_data.name ?
-                                          <span title={nft.external_data.name} style={{ display: '-webkit-box', WebkitLineClamp: '2', WebkitBoxOrient: 'vertical', whiteSpace: 'pre-wrap', overflow: 'hidden' }}>{nft.external_data.name}</span>
+                                      :
+                                      <a href={nft.external_data ? nft.external_data.image ? Array.isArray(nft.external_data.image) ? nft.external_data.image[0] : nft.external_data.image : nft.external_data.external_url ? nft.external_data.external_url : nft.token_url : nft.token_url} target="_blank" rel="noopener noreferrer" className="d-block" style={{ minHeight: width > 575 ? '10rem' : null }}>
+                                        <Img
+                                          src={nft.external_data ? nft.external_data.image : null}
+                                          loader={<div className="d-flex align-items-center justify-content-center" style={{ minHeight: '15rem', maxHeight: '15rem' }}><Loader type="Oval" color="#0b5ed7" width="1rem" height="1rem" /></div>}
+                                          unloader={nft.external_data && nft.external_data.image ?
+                                            <img src={Array.isArray(nft.external_data.image) ? nft.external_data.image[0] : nft.external_data.image} alt="" className="w-100 h-100 mx-auto" style={{ maxHeight: '30rem' }} />
+                                            :
+                                            <div className="w-100 h-100 text-muted d-flex align-items-center justify-content-center mx-auto" style={{ minHeight: '15rem', maxHeight: '15rem' }}>{"Data not found"}</div>
+                                          }
+                                          alt=""
+                                          className="w-100 h-100 mx-auto"
+                                          style={{ maxHeight: '30rem' }}
+                                        />
+                                      </a>
+                                    }
+                                    <div className="pt-3 px-3">
+                                      <CardText className="text-primary mb-2" style={{ fontSize: '.85rem', fontWeight: 500, textAlign: 'left' }}>
+                                        <a href={nft.token_url} target="_blank" rel="noopener noreferrer">
+                                          {nft.external_data && nft.external_data.name ?
+                                            <span title={nft.external_data.name} style={{ display: '-webkit-box', WebkitLineClamp: '2', WebkitBoxOrient: 'vertical', whiteSpace: 'pre-wrap', overflow: 'hidden' }}>{nft.external_data.name}</span>
+                                            :
+                                            '-'
+                                          }
+                                        </a>
+                                      </CardText>
+                                      <CardText className="text-muted mb-2" style={{ fontSize: '.75rem', fontWeight: 300, textAlign: 'left' }}>
+                                        {nft.external_data && nft.external_data.description && (
+                                          <span title={nft.external_data.description} style={{ display: '-webkit-box', WebkitLineClamp: '5', WebkitBoxOrient: 'vertical', whiteSpace: 'pre-wrap', overflow: 'hidden' }}><Linkify>{parse(nft.external_data.description)}</Linkify></span>
+                                        )}
+                                      </CardText>
+                                      <CardText className="mb-2" style={{ fontSize: '.85rem', fontWeight: 600, textAlign: 'left' }}>
+                                        {"Token ID: "}
+                                        {nft.token_id ?
+                                          <>{"#"}{nft.token_id}</>
                                           :
                                           '-'
                                         }
-                                      </a>
-                                    </CardText>
-                                    <CardText className="text-muted mb-2" style={{ fontSize: '.75rem', fontWeight: 300, textAlign: 'left' }}>
-                                      {nft.external_data && nft.external_data.description && (
-                                        <span title={nft.external_data.description} style={{ display: '-webkit-box', WebkitLineClamp: '5', WebkitBoxOrient: 'vertical', whiteSpace: 'pre-wrap', overflow: 'hidden' }}><Linkify>{parse(nft.external_data.description)}</Linkify></span>
-                                      )}
-                                    </CardText>
-                                    <CardText className="mb-2" style={{ fontSize: '.85rem', fontWeight: 600, textAlign: 'left' }}>
-                                      {"Token ID: "}
-                                      {nft.token_id ?
-                                        <>{"#"}{nft.token_id}</>
-                                        :
-                                        '-'
-                                      }
-                                    </CardText>
+                                      </CardText>
+                                    </div>
                                   </div>
-                                </div>
-                              ))}
-                            </Slider>
-                            :
-                            <div className="w-100 h-100 text-muted d-flex align-items-center justify-content-center mx-auto" style={{ minHeight: '15rem', maxHeight: '15rem' }}>{"Data not found"}</div>
-                          }
-                        </CardBody>
-                      </Card>
-                      :
-                      // asset infomation
-                      <Card className="p-3">
-                        <CardTitle tag="h5" className="mb-0" style={{ fontWeight: 600, textAlign: 'left' }}>
-                          <Link to={`/${chainSelected}/address/${balance.contract_address}${assetTypeSelected === 'nft' ? `/${assetTypeSelected}` : ''}`} className="d-flex align-items-center" style={{ wordBreak: 'break-word' }}>
-                            <CardImg top src={balance.logo_url} alt="" className="avatar avatar-no-min-width" style={{ marginRight: balance.logo_url ? '.5rem' : null }} />
-                            <span style={{ fontSize: '1rem', marginRight: '.5rem' }}>{balance.contract_name}</span>
-                            <span className="text-muted ml-auto" style={{ minWidth: '2rem', textAlign: 'right', fontSize: '.65rem', fontWeight: 500, marginLeft: 'auto' }}>
-                              {balance.contract_ticker_symbol}
-                            </span>
-                          </Link>
-                        </CardTitle>
-                        <CardBody className="p-0 pt-3">
-                          <CardText className="text-primary mb-2" style={{ fontSize: '.85rem', fontWeight: 400, textAlign: 'left' }}>
-                            {"Price: "}
-                            {typeof balance.quote_rate === 'number' ?
-                              <>{"$"}{numberOptimizeDecimal(numeral(balance.quote_rate).format(balance.quote_rate > 1.01 ? '0,0.00' : '0,0.0000000000'))}</>
+                                ))}
+                              </Slider>
                               :
-                              '-'
+                              <div className="w-100 h-100 text-muted d-flex align-items-center justify-content-center mx-auto">{"No data available"}</div>
                             }
-                          </CardText>
-                          <CardText className="d-flex align-items-top mb-2" style={{ fontSize: '.85rem', fontWeight: 600, textAlign: 'left' }}>
-                            <span style={{ marginRight: '.25rem' }}>{"Balance:"}</span>
-                            <span className="d-grid">
-                              {numberOptimizeDecimal(numeral(balance.balance * Math.pow(10, -1 * balance.contract_decimals)).format(balance.balance * Math.pow(10, -1 * balance.contract_decimals) > 1.01 ? '0,0.00' : '0,0.0000000000'))}
-                              {typeof balance.quote === 'number' && (<span className="text-info" style={{ fontSize: '.85rem' }}>{typeof balance.quote_rate === 'number' ? <>{"($"}{numberOptimizeDecimal(numeral(balance.quote).format(balance.quote > 1.01 ? '0,0.00' : '0,0.0000000000'))}{")"}</> : '-'}</span>)}
-                            </span>
-                          </CardText>
-                        </CardBody>
-                      </Card>
-                    }
-                  </Col>
+                          </CardBody>
+                        </Card>
+                        :
+                        // asset infomation
+                        <Card className="p-3">
+                          <CardTitle tag="h5" className="mb-0" style={{ fontWeight: 600, textAlign: 'left' }}>
+                            <Link to={`/${chainSelected}/address/${balance.contract_address}${assetTypeSelected === 'nft' ? `/${assetTypeSelected}` : ''}`} className="d-flex align-items-center" style={{ wordBreak: 'break-word' }}>
+                              <CardImg top src={balance.logo_url} alt="" className="avatar avatar-no-min-width" style={{ marginRight: balance.logo_url ? '.5rem' : null }} />
+                              <span style={{ fontSize: '1rem', marginRight: '.5rem' }}>{balance.contract_name}</span>
+                              <span className="text-muted ml-auto" style={{ minWidth: '2rem', textAlign: 'right', fontSize: '.65rem', fontWeight: 500, marginLeft: 'auto' }}>
+                                {balance.contract_ticker_symbol}
+                              </span>
+                            </Link>
+                          </CardTitle>
+                          <CardBody className="p-0 pt-3">
+                            <CardText className="text-primary mb-2" style={{ fontSize: '.85rem', fontWeight: 400, textAlign: 'left' }}>
+                              {"Price: "}
+                              {typeof balance.quote_rate === 'number' ?
+                                <>{"$"}{numberOptimizeDecimal(numeral(balance.quote_rate).format(balance.quote_rate > 1.01 ? '0,0.00' : '0,0.0000000000'))}</>
+                                :
+                                '-'
+                              }
+                            </CardText>
+                            <CardText className="d-flex align-items-top mb-2" style={{ fontSize: '.85rem', fontWeight: 600, textAlign: 'left' }}>
+                              <span style={{ marginRight: '.25rem' }}>{"Balance:"}</span>
+                              <span className="d-grid">
+                                {numberOptimizeDecimal(numeral(balance.balance * Math.pow(10, -1 * balance.contract_decimals)).format(balance.balance * Math.pow(10, -1 * balance.contract_decimals) > 1.01 ? '0,0.00' : '0,0.0000000000'))}
+                                {typeof balance.quote === 'number' && (<span className="text-info" style={{ fontSize: '.85rem' }}>{typeof balance.quote_rate === 'number' ? <>{"($"}{numberOptimizeDecimal(numeral(balance.quote).format(balance.quote > 1.01 ? '0,0.00' : '0,0.0000000000'))}{")"}</> : '-'}</span>)}
+                              </span>
+                            </CardText>
+                          </CardBody>
+                        </Card>
+                      }
+                    </Col>
+                  </>
                 ))}
               </Row>
             }
