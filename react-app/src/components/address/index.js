@@ -475,28 +475,39 @@ const Address = props => {
                         <CardTitle tag="h5" className="mb-0 p-3" style={{ fontWeight: 600, textAlign: 'left' }}>
                           <Link to={`/${chainSelected}/address/${balance.contract_address}${assetTypeSelected === 'nft' ? `/${assetTypeSelected}` : ''}`} className="d-flex align-items-center" style={{ wordBreak: 'break-word' }}>
                             <CardImg top src={balance.logo_url} alt="" className="avatar avatar-no-min-width" style={{ marginRight: balance.logo_url ? '.125rem' : null }} />
-                            <span style={{ fontSize: '1rem', marginRight: '.5rem' }}>{balance.contract_name}</span>
+                            <span style={{ fontSize: '1rem', marginRight: '.5rem' }}>{balance.contract_name || balance.contract_address}</span>
                             <span className="text-muted ml-auto" style={{ minWidth: '2rem', textAlign: 'right', fontSize: '.65rem', fontWeight: 500, marginLeft: 'auto' }}>
                               {balance.contract_ticker_symbol}
                             </span>
                           </Link>
                         </CardTitle>
-                        {balance.nft_data && balance.nft_data.length > 0 && (
-                          <CardBody className="p-0 pb-3">
+                        <CardBody className="p-0 pb-3">
+                          {balance.nft_data && balance.nft_data.length > 0 ?
                             <Slider {...nftSlickSettings}>
                               {balance.nft_data.map((nft, key) => (
                                 <div key={key} className="carousel-item">
                                   {nft.external_data && nft.external_data.animation_url ?
                                     <Player
                                       playsInline
-                                      poster={nft.external_data.image}
+                                      poster={Array.isArray(nft.external_data.image) ? nft.external_data.image[0] : nft.external_data.image}
                                       src={nft.external_data.animation_url}
                                       className="w-100 h-100 mx-auto"
                                       style={{ minHeight: width > 575 ? '10rem' : '', maxHeight: '30rem' }}
                                     />
                                     :
-                                    <a href={nft.external_data ? nft.external_data.image ? nft.external_data.image : nft.external_data.external_url ? nft.external_data.external_url : nft.token_url : nft.token_url} target="_blank" rel="noopener noreferrer" className="d-block" style={{ minHeight: width > 575 ? '10rem' : null }}>
-                                      <Img src={nft.external_data ? nft.external_data.image : null} alt="" className="w-100 h-100 mx-auto" style={{ maxHeight: '30rem' }} />
+                                    <a href={nft.external_data ? nft.external_data.image ? Array.isArray(nft.external_data.image) ? nft.external_data.image[0] : nft.external_data.image : nft.external_data.external_url ? nft.external_data.external_url : nft.token_url : nft.token_url} target="_blank" rel="noopener noreferrer" className="d-block" style={{ minHeight: width > 575 ? '10rem' : null }}>
+                                      <Img
+                                        src={nft.external_data ? nft.external_data.image : null}
+                                        loader={<div className="d-flex align-items-center justify-content-center" style={{ minHeight: '15rem', maxHeight: '15rem' }}><Loader type="Oval" color="#0b5ed7" width="1rem" height="1rem" /></div>}
+                                        unloader={nft.external_data && nft.external_data.image ?
+                                          <img src={Array.isArray(nft.external_data.image) ? nft.external_data.image[0] : nft.external_data.image} alt="" className="w-100 h-100 mx-auto" style={{ maxHeight: '30rem' }} />
+                                          :
+                                          <div className="w-100 h-100 text-muted d-flex align-items-center justify-content-center mx-auto" style={{ minHeight: '15rem', maxHeight: '15rem' }}>{"Data not found"}</div>
+                                        }
+                                        alt=""
+                                        className="w-100 h-100 mx-auto"
+                                        style={{ maxHeight: '30rem' }}
+                                      />
                                     </a>
                                   }
                                   <div className="pt-3 px-3">
@@ -526,8 +537,10 @@ const Address = props => {
                                 </div>
                               ))}
                             </Slider>
-                          </CardBody>
-                        )}
+                            :
+                            <div className="w-100 h-100 text-muted d-flex align-items-center justify-content-center mx-auto" style={{ minHeight: '15rem', maxHeight: '15rem' }}>{"Data not found"}</div>
+                          }
+                        </CardBody>
                       </Card>
                       :
                       // asset infomation
