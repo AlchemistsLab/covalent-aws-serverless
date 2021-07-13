@@ -131,8 +131,6 @@ const Address = props => {
                   data[size++] = response.data.items[i];
                 }
                 setBalances(data);
-                // set first page of data loaded
-                setBalancesLoaded(true);
               }
               hasMore = response.data.pagination && response.data.pagination.has_more;
             }
@@ -141,6 +139,8 @@ const Address = props => {
             }
             setBalancesLoading(false);
           } catch (error) {}
+          // set first page of data loaded
+          setBalancesLoaded(true);
           page++;
         }
         // end pagination
@@ -203,8 +203,6 @@ const Address = props => {
                       data[size++] = { ...response.data.items[i], type: assetTypeSelected };
                     }
                     setTransactions(data);
-                    // set first page of data loaded
-                    setTransactionsLoaded(true);
                     if (size >= (transactionsPage + 1) * transactionsPageSize) {
                       hasMore = false;
                     }
@@ -212,6 +210,8 @@ const Address = props => {
                 }
                 setTransactionsLoading(false);
               } catch (error) {}
+              // set first page of data loaded
+              setTransactionsLoaded(true);
               iNft++;
             }
             hasMore = !(iNft >= nfts.length) && hasMore;
@@ -233,8 +233,6 @@ const Address = props => {
                     data[size++] = response.data.items[i];
                   }
                   setTransactions(data);
-                  // set first page of data loaded
-                  setTransactionsLoaded(true);
                 }
                 hasMore = response.data.pagination && response.data.pagination.has_more;
               }
@@ -243,6 +241,8 @@ const Address = props => {
               }
               setTransactionsLoading(false);
             } catch (error) {}
+            // set first page of data loaded
+            setTransactionsLoaded(true);
             page++;
           }
         }
@@ -468,7 +468,7 @@ const Address = props => {
               <div className="d-flex align-items-center justify-content-center" style={{ maxWidth: '40rem', minHeight: '40vh', margin: 'auto' }}>
                 <Jumbotron>
                   <h1 className="display-3 d-flex align-items-center justify-content-center"><EmojiDizzy style={{ marginRight: '1rem' }} />{"Not found!"}</h1>
-                  <p className="lead">{"There is no "}{assetTypeSelected === 'nft' ? 'NFTs' : 'balances'}{" in this address."}</p>
+                  <p className="lead">{balances.length < 1 ? 'Sorry, We are unable to locate this address.' : `There is no ${assetTypeSelected === 'nft' ? 'NFTs' : 'balances'} in this address.`}</p>
                 </Jumbotron>
               </div>
               :
