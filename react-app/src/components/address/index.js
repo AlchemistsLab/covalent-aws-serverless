@@ -294,7 +294,7 @@ const Address = props => {
     return { ...balance, balance: Number(balance.balance), nft_data: balance.nft_data && balance.nft_data.length > 0 ? balance.nft_data : null };
   }).filter(balance => assetTypeSelected === 'nft' ? balance.type === assetTypeSelected : balance.type !== 'nft');
   filteredBalances = filteredBalances && filteredBalances.filter((balance, i) => assetTypeSelected === 'nft' || balance.balance > 0 || (filteredBalances.findIndex(_balance => _balance.balance > 0) < 0 && i < 3));
-  filteredBalances = _.orderBy(filteredBalances, [assetTypeSelected === 'nft' ? 'nft_data' : 'index'], ['asc']).filter((balance, i) => balancesSeeMore || i < balancesSeeMoreThreshold);
+  filteredBalances = _.orderBy(filteredBalances, [assetTypeSelected === 'nft' ? 'nft_data' : 'index'], ['asc']);
 
   // normalize and filter transactions data
   const filteredTransactions = transactions && _.orderBy(transactions.map((transaction, i) => {
@@ -473,7 +473,7 @@ const Address = props => {
               </div>
               :
               <Row>
-                {filteredBalances.map((balance, key) => (
+                {filteredBalances.filter((balance, i) => balancesSeeMore || i < balancesSeeMoreThreshold).map((balance, key) => (
                   <>
                     {/*filteredBalances[key - 1] && filteredBalances[key - 1].nft_data && !filteredBalances[key].nft_data && (
                       [...Array(width <= 575 ? 0 : (width <= 991 ? 2 : width <= 1200 ? 3 : 4) - (key % (width <= 991 ? 2 : width <= 1200 ? 3 : 4))).keys()].map(i => (
