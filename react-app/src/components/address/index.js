@@ -495,7 +495,7 @@ const Address = props => {
                                 style={{ marginRight: balance.logo_url ? '.125rem' : null }}
                               />
                               <span style={{ fontSize: '1rem', marginRight: '.5rem' }}>{balance.contract_name || balance.contract_address}</span>
-                              <span className="text-muted ml-auto" style={{ minWidth: '2rem', textAlign: 'right', fontSize: '.65rem', fontWeight: 500, marginLeft: 'auto' }}>
+                              <span className="text-muted ml-auto" style={{ minWidth: '2.5rem', textAlign: 'right', fontSize: '.65rem', fontWeight: 500, marginLeft: 'auto' }}>
                                 {balance.contract_ticker_symbol}
                               </span>
                             </Link>
@@ -574,7 +574,7 @@ const Address = props => {
                                 style={{ marginRight: balance.logo_url ? '.5rem' : null }}
                               />
                               <span style={{ fontSize: '1rem', marginRight: '.5rem' }}>{balance.contract_name}</span>
-                              <span className="text-muted ml-auto" style={{ minWidth: '2rem', textAlign: 'right', fontSize: '.65rem', fontWeight: 500, marginLeft: 'auto' }}>
+                              <span className="text-muted ml-auto" style={{ minWidth: '2.5rem', textAlign: 'right', fontSize: '.65rem', fontWeight: 500, marginLeft: 'auto' }}>
                                 {balance.contract_ticker_symbol}
                               </span>
                             </Link>
